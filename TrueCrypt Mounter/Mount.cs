@@ -72,11 +72,7 @@ namespace VeraCrypt_Mounter
         internal static int MountDrive(string[] partition, string driveletter, string keyfile, string password, bool silent,
                                           bool beep, bool force, bool readOnly, bool removable, string pim, string hash, bool tc)
         {
-            int output;
-            Tc.FileName = _config.GetValue("Grundeinstellungen", "Truecryptpath", "");
-
-            Tc.RedirectStandardOutput = true;
-            Tc.UseShellExecute = false;
+            int output = 1;
             const string status = "Die Vareable ist null oder leer:";
             try
             {
@@ -107,14 +103,7 @@ namespace VeraCrypt_Mounter
             }
             catch (Exception e)
             {
-                string text = "";
-#if DEBUG
-                text = "Mount Class";
-#endif
-#if RELEASE
-                text = "Fehler";
-#endif
-                MessageBox.Show(e.Message, text);
+                MessageBox.Show(e.Message);
                 return 2;
             }
 
@@ -138,49 +127,38 @@ namespace VeraCrypt_Mounter
             if (readOnly)
                 argumentstring += Mountoption + MountoptionReadonly;
             if (tc)
-                argumentstring += Truecrypt;
-
-            
+                argumentstring += Truecrypt;         
 # if DEBUG
             DialogResult result = MessageBox.Show(Tc.Arguments, "Mountstring", MessageBoxButtons.RetryCancel);
             if (result == DialogResult.Cancel)
                 return 2;
-            //Clipboard.SetDataObject(argumentstring, true);
 #endif
-            int res = 1;
+
             foreach (string pa in partition)
             {
                 string path = Volume + pa;
-                Tc.Arguments = path + argumentstring;
-                try
-                {
-                    Tcprocess.StartInfo = Tc;
-                    Tcprocess.Start();
-                    Tcprocess.WaitForExit();
-                    output = Tcprocess.ExitCode;
-                    Tcprocess.Close();
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.Message);
-                    return 1;
-                }
-                if (output == 0)
-                    res = 0;
+                output = ProcessMount(argumentstring, path);                
             }
-            return res;
+            return output;
 
         }
-
+        /// <summary>
+        /// Mount the containe for the keyfiles.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="driveletter"></param>
+        /// <param name="silent"></param>
+        /// <param name="beep"></param>
+        /// <param name="force"></param>
+        /// <param name="readOnly"></param>
+        /// <param name="removable"></param>
+        /// <param name="hash"></param>
+        /// <param name="pim"></param>
+        /// <returns></returns>
         public static int MountKeyfileContainer(string path, string driveletter, bool silent, bool beep, bool force,
                                                 bool readOnly, bool removable, string hash, bool pim)
         {
             int output;
-
-            Tc.FileName = _config.GetValue("Grundeinstellungen", "Truecryptpath", "");
-
-            Tc.RedirectStandardOutput = true;
-            Tc.UseShellExecute = false;
             const string status = "Die Vareable ist null oder leer:";
             try
             {
@@ -229,32 +207,20 @@ namespace VeraCrypt_Mounter
             if (result == DialogResult.Cancel)
                 return 2;
 #endif
-            Tc.Arguments = argumentstring;
-            try
-            {
-                Tcprocess.StartInfo = Tc;
-                Tcprocess.Start();
-                Tcprocess.WaitForExit();
-                output = Tcprocess.ExitCode;
-                Tcprocess.Close();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-                return 1;
-            }
+            output = ProcessMount(argumentstring);
             return output;
         }
-
+        /// <summary>
+        /// Dissmount a drive or a kontainer.
+        /// </summary>
+        /// <param name="driveletter"></param>
+        /// <param name="silent"></param>
+        /// <param name="beep"></param>
+        /// <param name="force"></param>
+        /// <returns></returns>
         public static int Dismount(string driveletter, bool silent, bool beep, bool force)
         {
             int output;
-
-            Tc.FileName = _config.GetValue(ConfigTrm.Mainconfig.Section, ConfigTrm.Mainconfig.Truecryptpath, "");
-
-            Tc.RedirectStandardOutput = true;
-            Tc.UseShellExecute = false;
-
             const string status = "Die Vareable ist null oder leer:";
             try
             {
@@ -282,20 +248,7 @@ namespace VeraCrypt_Mounter
             if (result == DialogResult.Cancel)
                 return 2;
 #endif
-            Tc.Arguments = argumentstring;
-            try
-            {
-                Tcprocess.StartInfo = Tc;
-                Tcprocess.Start();
-                Tcprocess.WaitForExit();
-                output = Tcprocess.ExitCode;
-                Tcprocess.Close();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-                return 1;
-            }
+            output = ProcessMount(argumentstring);
             return output;
         }
 
@@ -320,15 +273,9 @@ namespace VeraCrypt_Mounter
                                          bool beep, bool force, bool readOnly, bool removable, bool tc, string pim, string hash)
         {
             int output = 2;
-
-            Tc.FileName = _config.GetValue(ConfigTrm.Mainconfig.Section, ConfigTrm.Mainconfig.Truecryptpath, "");
-
-            Tc.RedirectStandardOutput = true;
-            Tc.UseShellExecute = false;
             const string status = "Die Vareable ist null oder leer:";
             try
             {
-
                 if (string.IsNullOrEmpty(path))
                 {
                     throw new Exception(status + "(path)");
@@ -349,14 +296,7 @@ namespace VeraCrypt_Mounter
             }
             catch (Exception e)
             {
-                string text = "";
-#if DEBUG
-                text = "Mount Class";
-#endif
-#if RELEASE
-                text = "Fehler";
-#endif
-                MessageBox.Show(e.Message, text);
+                MessageBox.Show(e.Message);
                 return 2;
             }
             string argumentstring = Volume + path + Letter + driveletter + Password + password + Quit;
@@ -386,13 +326,29 @@ namespace VeraCrypt_Mounter
                 return 2;
             //Clipboard.SetDataObject(argumentstring, true);
 #endif
-            Tc.Arguments = argumentstring;
+            output = ProcessMount(argumentstring);
+            return output;
+        }
+        /// <summary>
+        /// Process veracrypt exe 
+        /// </summary>
+        /// <param name="argumentstring"></param>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private static int ProcessMount(string argumentstring, string path = "")
+        {
+            int ret = 1;
+            Tc.FileName = _config.GetValue(ConfigTrm.Mainconfig.Section, ConfigTrm.Mainconfig.Truecryptpath, "");
+            Tc.RedirectStandardOutput = true;
+            Tc.UseShellExecute = false;
+
+            Tc.Arguments = path + argumentstring;
             try
             {
                 Tcprocess.StartInfo = Tc;
                 Tcprocess.Start();
                 Tcprocess.WaitForExit();
-                output = Tcprocess.ExitCode;
+                ret = Tcprocess.ExitCode;
                 Tcprocess.Close();
             }
             catch (Exception e)
@@ -400,7 +356,7 @@ namespace VeraCrypt_Mounter
                 MessageBox.Show(e.Message);
                 return 1;
             }
-            return output;
+            return ret;
         }
     }
 }
