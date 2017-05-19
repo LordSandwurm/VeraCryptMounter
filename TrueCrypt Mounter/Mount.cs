@@ -67,10 +67,11 @@ namespace VeraCrypt_Mounter
         /// <param name="pim"></param>
         /// <param name="hash"></param>
         /// <param name="tc"></param>
+        /// <param name="showarguments">shows the argument string. Did not mount!</param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         internal static int MountDrive(string[] partition, string driveletter, string keyfile, string password, bool silent,
-                                          bool beep, bool force, bool readOnly, bool removable, string pim, string hash, bool tc)
+                                          bool beep, bool force, bool readOnly, bool removable, string pim, string hash, bool tc, bool showarguments = false)
         {
             int output = 1;
             const string status = "Die Vareable ist null oder leer:";
@@ -96,10 +97,10 @@ namespace VeraCrypt_Mounter
                         throw new Exception("Keyfile nicht vorhanden");
                     }
                 }
-                if (!File.Exists(Tc.FileName))
-                {
-                    throw new Exception("TrueCrypt.exe nicht vorhanden");
-                }
+                //if (!File.Exists(Tc.FileName))
+                //{
+                //    throw new Exception("TrueCrypt.exe nicht vorhanden");
+                //}
             }
             catch (Exception e)
             {
@@ -133,17 +134,29 @@ namespace VeraCrypt_Mounter
             if (result == DialogResult.Cancel)
                 return 2;
 #endif
+            
 
-            foreach (string pa in partition)
+            if (showarguments)
             {
-                string path = Volume + pa;
-                output = ProcessMount(argumentstring, path);                
+                foreach (string pa in partition)
+                {
+                    string path = Volume + pa;
+                    
+                }
             }
+            else
+            {
+                foreach (string pa in partition)
+                {
+                    string path = Volume + pa;
+                    output = ProcessMount(argumentstring, path);
+                }
+            }       
             return output;
 
         }
         /// <summary>
-        /// Mount the containe for the keyfiles.
+        /// Mount the container for the keyfiles.
         /// </summary>
         /// <param name="path"></param>
         /// <param name="driveletter"></param>
@@ -175,10 +188,10 @@ namespace VeraCrypt_Mounter
                 {
                     throw new Exception("Laufwerksbuchstabe ist belegt");
                 }
-                if (!File.Exists(Tc.FileName))
-                {
-                    throw new Exception("TrueCrypt.exe nicht vorhanden");
-                }
+                //if (!File.Exists(Tc.FileName))
+                //{
+                //    throw new Exception("TrueCrypt.exe nicht vorhanden");
+                //}
             }
             catch (Exception e)
             {
@@ -267,10 +280,11 @@ namespace VeraCrypt_Mounter
         /// <param name="tc"></param>
         /// <param name="pim"></param>
         /// <param name="hash"></param>
+        /// <param name="showarguments"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         public static int MountContainer(string path, string driveletter, string keyfile, string password, bool silent,
-                                         bool beep, bool force, bool readOnly, bool removable, bool tc, string pim, string hash)
+                                         bool beep, bool force, bool readOnly, bool removable, bool tc, string pim, string hash, bool showarguments = false)
         {
             int output = 2;
             const string status = "Die Vareable ist null oder leer:";
@@ -289,10 +303,10 @@ namespace VeraCrypt_Mounter
                 {
                     throw new Exception("Laufwerksbuchstabe ist belegt");
                 }
-                if (!File.Exists(Tc.FileName))
-                {
-                    throw new Exception("TrueCrypt.exe nicht vorhanden");
-                }
+                //if (!File.Exists(Tc.FileName))
+                //{
+                //    throw new Exception("TrueCrypt.exe nicht vorhanden");
+                //}
             }
             catch (Exception e)
             {

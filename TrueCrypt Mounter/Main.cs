@@ -88,7 +88,7 @@ namespace VeraCrypt_Mounter
         /// <param name="tc">bool</param>
         /// <returns></returns>
         public delegate int MountDriveDelegate(string[] partition, string driveletter, string keyfile, string password, bool silent,
-                                                bool beep, bool force, bool readOnly, bool removable, string pim, string hash, bool tc);
+                                                bool beep, bool force, bool readOnly, bool removable, string pim, string hash, bool tc, bool showarguments = false);
 
         /// <summary>
         /// delegate for mounting a container
@@ -107,7 +107,7 @@ namespace VeraCrypt_Mounter
         /// <param name="hash"></param>
         /// <returns></returns>
         public delegate int MountContainerDelegate(string path, string driveletter, string keyfile, string password, bool silent,
-                                                   bool beep, bool force, bool readOnly, bool removable, bool tc, string pim,string hash);
+                                                   bool beep, bool force, bool readOnly, bool removable, bool tc, string pim,string hash, bool showarguments = false);
 
         /// <summary>
         /// delegate for dismounting a drive or container
@@ -525,6 +525,7 @@ namespace VeraCrypt_Mounter
 
         private void ButtonMountDrive_Click(object sender, EventArgs e)
         {
+            bool showarguments = false;
             ValidateMount vm = new ValidateMount();
             MountDriveDelegate mountdrive = Mount.MountDrive;
             MountVareables mvd;
@@ -541,15 +542,11 @@ namespace VeraCrypt_Mounter
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, LanguagePool.GetInstance().GetString(LanguageRegion, "Error", _language),
-                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(ex.Message, LanguagePool.GetInstance().GetString(LanguageRegion, "Error", _language), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            
+
             name = comboBoxDrives.SelectedItem.ToString();
-            //change elements to mount state
-            toolStripLabelNotification.Visible = false;
-            toolStripProgressBar.Visible = true;
             
             try
             {
@@ -560,17 +557,20 @@ namespace VeraCrypt_Mounter
                 MessageBox.Show(ex.Message, LanguagePool.GetInstance().GetString(LanguageRegion, "Error", _language), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            
+
+            toolStripLabelNotification.Visible = false;
+            toolStripProgressBar.Visible = true;
+            toolStripProgressBar.MarqueeAnimationSpeed = 30;
+            Busy();
+            Cursor = Cursors.WaitCursor;
+
             // mount drive 
             mountdrive.BeginInvoke(mvd.partitionlist, mvd.driveletter, mvd.key, mvd.password, mvd.silent, mvd.beep, mvd.force, mvd.readOnly, mvd.removalbe, mvd.pim, 
-                                    mvd.hash, mvd.tc, CallbackHandlerMountDrive, mountdrive);
+                                    mvd.hash, mvd.tc, showarguments, CallbackHandlerMountDrive, mountdrive);
             
             //change to mount state 
             _lablesuccseed = LanguagePool.GetInstance().GetString(LanguageRegion, "NotificationDriveSucceed", _language);
             _lablefailed = LanguagePool.GetInstance().GetString(LanguageRegion, "NotificationDriveFaild", _language);
-            toolStripProgressBar.MarqueeAnimationSpeed = 30;
-            Busy();
-            Cursor = Cursors.WaitCursor;
             return;
         }
 
@@ -597,21 +597,18 @@ namespace VeraCrypt_Mounter
                 return;
             }
 
-            string dletter = _config.GetValue(comboBoxDrives.SelectedItem.ToString(), ConfigTrm.Mainconfig.Driveletter,
-                                              "");
+            string dletter = _config.GetValue(comboBoxDrives.SelectedItem.ToString(), ConfigTrm.Mainconfig.Driveletter, "");
 
             DismountDelegate dismount = Mount.Dismount;
 
-            dismount.BeginInvoke(dletter, true, false, false, CallbackHandlerDismount, dismount);
-
-            _lablesuccseed = LanguagePool.GetInstance().GetString(LanguageRegion, "NotificationDriveDismountSucceed",_language);
-            _lablefailed = LanguagePool.GetInstance().GetString(LanguageRegion, "NotificationDriveDismountFaild",_language);
             toolStripProgressBar.Visible = true;
             toolStripProgressBar.MarqueeAnimationSpeed = 30;
-
             Busy();
-
             Cursor = Cursors.WaitCursor;
+
+            dismount.BeginInvoke(dletter, true, false, false, CallbackHandlerDismount, dismount);
+            _lablesuccseed = LanguagePool.GetInstance().GetString(LanguageRegion, "NotificationDriveDismountSucceed",_language);
+            _lablefailed = LanguagePool.GetInstance().GetString(LanguageRegion, "NotificationDriveDismountFaild",_language);
             return;
         }
 
@@ -621,6 +618,7 @@ namespace VeraCrypt_Mounter
 
         private void ButtonMountContainer_Click(object sender, EventArgs e)
         {
+            bool showarguments = false;
             MountVareables mvd;
             ValidateMount vm = new ValidateMount();
             string name;
@@ -630,14 +628,12 @@ namespace VeraCrypt_Mounter
                 // Test if entry in driverbox is chosen
                 if (comboBoxContainer.SelectedItem == null)
                 {
-                    throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "SelectionFaild",
-                                                                             _language));
+                    throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "SelectionFaild", _language));
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, LanguagePool.GetInstance().GetString(LanguageRegion, "Error", _language),
-                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(ex.Message, LanguagePool.GetInstance().GetString(LanguageRegion, "Error", _language), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             name = comboBoxContainer.SelectedItem.ToString();
@@ -660,7 +656,7 @@ namespace VeraCrypt_Mounter
             MountContainerDelegate mountcontainer = Mount.MountContainer;
 
             mountcontainer.BeginInvoke(mvd.path, mvd.driveletter, mvd.key, mvd.password, mvd.silent, mvd.beep, mvd.force, mvd.readOnly, mvd.removalbe,
-                                        mvd.tc, mvd.pim, mvd.hash, CallbackHandlerMountContainer, mountcontainer);
+                                        mvd.tc, mvd.pim, mvd.hash, showarguments, CallbackHandlerMountContainer, mountcontainer);
 
             toolStripProgressBar.MarqueeAnimationSpeed = 30;
             _lablesuccseed = LanguagePool.GetInstance().GetString(LanguageRegion, "NotificationContainerSucceed", _language);
