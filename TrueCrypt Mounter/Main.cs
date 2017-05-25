@@ -573,6 +573,9 @@ namespace VeraCrypt_Mounter
             _lablefailed = LanguagePool.GetInstance().GetString(LanguageRegion, "NotificationDriveFaild", _language);
             return;
         }
+        #endregion
+
+        #region Buttons Dismount Drive
 
         private void ButtonDismountDrive_Click(object sender, EventArgs e)
         {
@@ -1455,5 +1458,61 @@ namespace VeraCrypt_Mounter
         }
 
         #endregion
+
+        /// <summary>
+        /// Collect comand line command and show them.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void showCommandToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            bool showarguments = true;
+            ValidateMount vm = new ValidateMount();
+            MountDriveDelegate mountdrive = Mount.MountDrive;
+            MountVareables mvd;
+            string name;
+
+            // test if combobox drive select is done.
+            try
+            {
+                // Test if entry in driverbox is chosen. 
+                if (comboBoxDrives.SelectedItem == null)
+                {
+                    throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "DriveSelectionFaild", _language));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, LanguagePool.GetInstance().GetString(LanguageRegion, "Error", _language), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            name = comboBoxDrives.SelectedItem.ToString();
+
+            try
+            {
+                mvd = vm.ValidateMountDrive(name, _language);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, LanguagePool.GetInstance().GetString(LanguageRegion, "Error", _language), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            toolStripLabelNotification.Visible = false;
+            toolStripProgressBar.Visible = true;
+            toolStripProgressBar.MarqueeAnimationSpeed = 30;
+            Busy();
+            Cursor = Cursors.WaitCursor;
+
+            // mount drive 
+            mountdrive.BeginInvoke(mvd.partitionlist, mvd.driveletter, mvd.key, mvd.password, mvd.silent, mvd.beep, mvd.force, mvd.readOnly, mvd.removalbe, mvd.pim,
+                                    mvd.hash, mvd.tc, showarguments, CallbackHandlerMountDrive, mountdrive);
+
+            //change to mount state 
+            _lablesuccseed = LanguagePool.GetInstance().GetString(LanguageRegion, "NotificationDriveSucceed", _language);
+            _lablefailed = LanguagePool.GetInstance().GetString(LanguageRegion, "NotificationDriveFaild", _language);
+            return;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿/***
+﻿  
+/***
  * <VeraCryptMounter. Programm to use Truecrypt drives and containers easier.>
  * Copyright (C) <2009>  <Rafael Grothmann>
  * 
@@ -141,7 +142,7 @@ namespace VeraCrypt_Mounter
                 foreach (string pa in partition)
                 {
                     string path = Volume + pa;
-                    
+                    //Show string
                 }
             }
             else

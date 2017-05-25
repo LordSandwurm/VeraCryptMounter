@@ -78,6 +78,7 @@ namespace VeraCrypt_Mounter
             this.toolStripMenuItem_Container_new = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem_Container_edit = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.showCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBoxDrive.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
@@ -198,7 +199,7 @@ namespace VeraCrypt_Mounter
             // toolStripMenuVersion
             // 
             this.toolStripMenuVersion.Name = "toolStripMenuVersion";
-            this.toolStripMenuVersion.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuVersion.Size = new System.Drawing.Size(112, 22);
             this.toolStripMenuVersion.Text = "Version";
             this.toolStripMenuVersion.Click += new System.EventHandler(this.ToolStripMenuVersion_Click);
             // 
@@ -417,28 +418,29 @@ namespace VeraCrypt_Mounter
             this.contextMenuStripDrive.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem_Drive_new,
             this.toolStripMenuItem_Drive_edit,
-            this.deleteToolStripMenuItem});
+            this.deleteToolStripMenuItem,
+            this.showCommandToolStripMenuItem});
             this.contextMenuStripDrive.Name = "contextMenuStripDrive";
-            this.contextMenuStripDrive.Size = new System.Drawing.Size(108, 70);
+            this.contextMenuStripDrive.Size = new System.Drawing.Size(162, 114);
             // 
             // toolStripMenuItem_Drive_new
             // 
             this.toolStripMenuItem_Drive_new.Name = "toolStripMenuItem_Drive_new";
-            this.toolStripMenuItem_Drive_new.Size = new System.Drawing.Size(107, 22);
+            this.toolStripMenuItem_Drive_new.Size = new System.Drawing.Size(161, 22);
             this.toolStripMenuItem_Drive_new.Text = "New";
             this.toolStripMenuItem_Drive_new.Click += new System.EventHandler(this.ToolStripMenuDriveNew_Click);
             // 
             // toolStripMenuItem_Drive_edit
             // 
             this.toolStripMenuItem_Drive_edit.Name = "toolStripMenuItem_Drive_edit";
-            this.toolStripMenuItem_Drive_edit.Size = new System.Drawing.Size(107, 22);
+            this.toolStripMenuItem_Drive_edit.Size = new System.Drawing.Size(161, 22);
             this.toolStripMenuItem_Drive_edit.Text = "Edit";
             this.toolStripMenuItem_Drive_edit.Click += new System.EventHandler(this.ToolStripMenuEditEntry_Click);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.ToolStripMenuDriveDelete_Click);
             // 
@@ -472,6 +474,13 @@ namespace VeraCrypt_Mounter
             this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
             this.deleteToolStripMenuItem1.Text = "Delete";
             this.deleteToolStripMenuItem1.Click += new System.EventHandler(this.ToolStripMenuContainerDelete_Click);
+            // 
+            // showCommandToolStripMenuItem
+            // 
+            this.showCommandToolStripMenuItem.Name = "showCommandToolStripMenuItem";
+            this.showCommandToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.showCommandToolStripMenuItem.Text = "Show command";
+            this.showCommandToolStripMenuItem.Click += new System.EventHandler(this.showCommandToolStripMenuItem_Click);
             // 
             // VeraCryptMounter
             // 
@@ -557,6 +566,7 @@ namespace VeraCrypt_Mounter
         private ToolStripMenuItem deleteToolStripMenuItem1;
         private ToolStripMenuItem automountToolStripMenuItem;
         private ToolStripMenuItem automountToolStripMenuItem1;
+        private ToolStripMenuItem showCommandToolStripMenuItem;
     }
 }
 
