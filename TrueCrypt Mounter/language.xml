@@ -237,6 +237,10 @@
       <D>Neu</D>
       <E>New</E>
     </Text>
+    <Text key="toolStripMenuItem_Drive_string">
+      <D>Zeige Befehl</D>
+      <E>show command</E>
+    </Text>
     <Text key="toolStripMenuItem_Drive_edit">
       <D>Bearbeiten</D>
       <E>Edit</E>

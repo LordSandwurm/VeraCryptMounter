@@ -142,6 +142,7 @@ namespace VeraCrypt_Mounter
                 foreach (string pa in partition)
                 {
                     string path = Volume + pa;
+                    MessageBox.Show(path);
                     //Show string
                 }
             }

@@ -282,7 +282,6 @@ namespace VeraCrypt_Mounter
             InitializeComponent();
             UsbEventWatcher();
 
-
             comboBoxDrives.ContextMenuStrip = contextMenuStripDrive;
             comboBoxContainer.ContextMenuStrip =contextMenuStripContainer ;
             
@@ -423,6 +422,7 @@ namespace VeraCrypt_Mounter
                     deleteToolStripMenuItem1.Text = LanguagePool.GetInstance().GetString(LanguageRegion, "deleteToolStripMenuItem1", _language);
                     automountToolStripMenuItem.Text = LanguagePool.GetInstance().GetString(LanguageRegion, "automountToolStripMenuItem", _language);
                     automountToolStripMenuItem1.Text = LanguagePool.GetInstance().GetString(LanguageRegion, "automountToolStripMenuItem", _language);
+                    showCommandToolStripMenuItem.Text = LanguagePool.GetInstance().GetString(LanguageRegion, "toolStripMenuItem_Drive_string", _language);
                     //.Text = LanguagePool.GetInstance().GetString(LanguageRegion, "", _language);
 
                     // Fill the tooltips with text.
@@ -1488,16 +1488,16 @@ namespace VeraCrypt_Mounter
             }
 
             name = comboBoxDrives.SelectedItem.ToString();
-
-            try
-            {
-                mvd = vm.ValidateMountDrive(name, _language);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, LanguagePool.GetInstance().GetString(LanguageRegion, "Error", _language), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            mvd = vm.ValidateMountDrive(name, _language);
+            //try
+            //{
+                
+            //}
+            //catch (Exception ex)
+            //{
+            //    //MessageBox.Show(ex.Message, LanguagePool.GetInstance().GetString(LanguageRegion, "Error", _language), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //    //return;
+            //}
 
             toolStripLabelNotification.Visible = false;
             toolStripProgressBar.Visible = true;
