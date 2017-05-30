@@ -79,6 +79,7 @@ namespace VeraCrypt_Mounter
             this.toolStripMenuItem_Container_new = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem_Container_edit = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.showCommandToolStripMenuItemContainer = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBoxDrive.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
@@ -207,7 +208,7 @@ namespace VeraCrypt_Mounter
             // buttonMount
             // 
             this.buttonMount.Location = new System.Drawing.Point(361, 25);
-            this.buttonMount.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonMount.Margin = new System.Windows.Forms.Padding(4);
             this.buttonMount.Name = "buttonMount";
             this.buttonMount.Size = new System.Drawing.Size(133, 28);
             this.buttonMount.TabIndex = 3;
@@ -220,7 +221,7 @@ namespace VeraCrypt_Mounter
             this.comboBoxDrives.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
             this.comboBoxDrives.FormattingEnabled = true;
             this.comboBoxDrives.Location = new System.Drawing.Point(5, 27);
-            this.comboBoxDrives.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.comboBoxDrives.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxDrives.Name = "comboBoxDrives";
             this.comboBoxDrives.Size = new System.Drawing.Size(347, 23);
             this.comboBoxDrives.TabIndex = 1;
@@ -232,7 +233,7 @@ namespace VeraCrypt_Mounter
             // buttonKeyfileContainerMount
             // 
             this.buttonKeyfileContainerMount.Location = new System.Drawing.Point(25, 20);
-            this.buttonKeyfileContainerMount.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonKeyfileContainerMount.Margin = new System.Windows.Forms.Padding(4);
             this.buttonKeyfileContainerMount.Name = "buttonKeyfileContainerMount";
             this.buttonKeyfileContainerMount.Size = new System.Drawing.Size(224, 30);
             this.buttonKeyfileContainerMount.TabIndex = 11;
@@ -243,7 +244,7 @@ namespace VeraCrypt_Mounter
             // buttonDismount
             // 
             this.buttonDismount.Location = new System.Drawing.Point(361, 62);
-            this.buttonDismount.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonDismount.Margin = new System.Windows.Forms.Padding(4);
             this.buttonDismount.Name = "buttonDismount";
             this.buttonDismount.Size = new System.Drawing.Size(133, 28);
             this.buttonDismount.TabIndex = 4;
@@ -257,9 +258,9 @@ namespace VeraCrypt_Mounter
             this.groupBoxDrive.Controls.Add(this.comboBoxDrives);
             this.groupBoxDrive.Controls.Add(this.buttonMount);
             this.groupBoxDrive.Location = new System.Drawing.Point(9, 30);
-            this.groupBoxDrive.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBoxDrive.Margin = new System.Windows.Forms.Padding(4);
             this.groupBoxDrive.Name = "groupBoxDrive";
-            this.groupBoxDrive.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBoxDrive.Padding = new System.Windows.Forms.Padding(4);
             this.groupBoxDrive.Size = new System.Drawing.Size(507, 100);
             this.groupBoxDrive.TabIndex = 0;
             this.groupBoxDrive.TabStop = false;
@@ -333,9 +334,9 @@ namespace VeraCrypt_Mounter
             this.groupBoxKeyfileContainer.Controls.Add(this.buttonKeyfileContainerDismount);
             this.groupBoxKeyfileContainer.Controls.Add(this.buttonKeyfileContainerMount);
             this.groupBoxKeyfileContainer.Location = new System.Drawing.Point(9, 236);
-            this.groupBoxKeyfileContainer.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBoxKeyfileContainer.Margin = new System.Windows.Forms.Padding(4);
             this.groupBoxKeyfileContainer.Name = "groupBoxKeyfileContainer";
-            this.groupBoxKeyfileContainer.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBoxKeyfileContainer.Padding = new System.Windows.Forms.Padding(4);
             this.groupBoxKeyfileContainer.Size = new System.Drawing.Size(533, 64);
             this.groupBoxKeyfileContainer.TabIndex = 10;
             this.groupBoxKeyfileContainer.TabStop = false;
@@ -343,7 +344,7 @@ namespace VeraCrypt_Mounter
             // buttonKeyfileContainerDismount
             // 
             this.buttonKeyfileContainerDismount.Location = new System.Drawing.Point(257, 20);
-            this.buttonKeyfileContainerDismount.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonKeyfileContainerDismount.Margin = new System.Windows.Forms.Padding(4);
             this.buttonKeyfileContainerDismount.Name = "buttonKeyfileContainerDismount";
             this.buttonKeyfileContainerDismount.Size = new System.Drawing.Size(224, 30);
             this.buttonKeyfileContainerDismount.TabIndex = 12;
@@ -357,9 +358,9 @@ namespace VeraCrypt_Mounter
             this.groupBoxContainer.Controls.Add(this.buttonDismountContainer);
             this.groupBoxContainer.Controls.Add(this.buttonMountContainer);
             this.groupBoxContainer.Location = new System.Drawing.Point(9, 129);
-            this.groupBoxContainer.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBoxContainer.Margin = new System.Windows.Forms.Padding(4);
             this.groupBoxContainer.Name = "groupBoxContainer";
-            this.groupBoxContainer.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBoxContainer.Padding = new System.Windows.Forms.Padding(4);
             this.groupBoxContainer.Size = new System.Drawing.Size(507, 100);
             this.groupBoxContainer.TabIndex = 5;
             this.groupBoxContainer.TabStop = false;
@@ -370,7 +371,7 @@ namespace VeraCrypt_Mounter
             this.comboBoxContainer.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
             this.comboBoxContainer.FormattingEnabled = true;
             this.comboBoxContainer.Location = new System.Drawing.Point(5, 27);
-            this.comboBoxContainer.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.comboBoxContainer.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxContainer.Name = "comboBoxContainer";
             this.comboBoxContainer.Size = new System.Drawing.Size(347, 23);
             this.comboBoxContainer.TabIndex = 6;
@@ -382,7 +383,7 @@ namespace VeraCrypt_Mounter
             // buttonDismountContainer
             // 
             this.buttonDismountContainer.Location = new System.Drawing.Point(361, 59);
-            this.buttonDismountContainer.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonDismountContainer.Margin = new System.Windows.Forms.Padding(4);
             this.buttonDismountContainer.Name = "buttonDismountContainer";
             this.buttonDismountContainer.Size = new System.Drawing.Size(133, 28);
             this.buttonDismountContainer.TabIndex = 9;
@@ -393,7 +394,7 @@ namespace VeraCrypt_Mounter
             // buttonMountContainer
             // 
             this.buttonMountContainer.Location = new System.Drawing.Point(361, 23);
-            this.buttonMountContainer.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonMountContainer.Margin = new System.Windows.Forms.Padding(4);
             this.buttonMountContainer.Name = "buttonMountContainer";
             this.buttonMountContainer.Size = new System.Drawing.Size(133, 28);
             this.buttonMountContainer.TabIndex = 8;
@@ -437,7 +438,7 @@ namespace VeraCrypt_Mounter
             this.deleteToolStripMenuItem,
             this.showCommandToolStripMenuItem});
             this.contextMenuStripDrive.Name = "contextMenuStripDrive";
-            this.contextMenuStripDrive.Size = new System.Drawing.Size(186, 128);
+            this.contextMenuStripDrive.Size = new System.Drawing.Size(186, 100);
             // 
             // toolStripMenuItem_Drive_new
             // 
@@ -473,30 +474,38 @@ namespace VeraCrypt_Mounter
             this.contextMenuStripContainer.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem_Container_new,
             this.editToolStripMenuItem_Container_edit,
-            this.deleteToolStripMenuItem1});
+            this.deleteToolStripMenuItem1,
+            this.showCommandToolStripMenuItemContainer});
             this.contextMenuStripContainer.Name = "contextMenuStripContainer";
-            this.contextMenuStripContainer.Size = new System.Drawing.Size(123, 76);
+            this.contextMenuStripContainer.Size = new System.Drawing.Size(188, 128);
             // 
             // toolStripMenuItem_Container_new
             // 
             this.toolStripMenuItem_Container_new.Name = "toolStripMenuItem_Container_new";
-            this.toolStripMenuItem_Container_new.Size = new System.Drawing.Size(122, 24);
+            this.toolStripMenuItem_Container_new.Size = new System.Drawing.Size(187, 24);
             this.toolStripMenuItem_Container_new.Text = "New";
             this.toolStripMenuItem_Container_new.Click += new System.EventHandler(this.ToolStripMenuContainerNew_Click);
             // 
             // editToolStripMenuItem_Container_edit
             // 
             this.editToolStripMenuItem_Container_edit.Name = "editToolStripMenuItem_Container_edit";
-            this.editToolStripMenuItem_Container_edit.Size = new System.Drawing.Size(122, 24);
+            this.editToolStripMenuItem_Container_edit.Size = new System.Drawing.Size(187, 24);
             this.editToolStripMenuItem_Container_edit.Text = "Edit";
             this.editToolStripMenuItem_Container_edit.Click += new System.EventHandler(this.ToolStripMenuEditEntry_Click);
             // 
             // deleteToolStripMenuItem1
             // 
             this.deleteToolStripMenuItem1.Name = "deleteToolStripMenuItem1";
-            this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(122, 24);
+            this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(187, 24);
             this.deleteToolStripMenuItem1.Text = "Delete";
             this.deleteToolStripMenuItem1.Click += new System.EventHandler(this.ToolStripMenuContainerDelete_Click);
+            // 
+            // showCommandToolStripMenuItemContainer
+            // 
+            this.showCommandToolStripMenuItemContainer.Name = "showCommandToolStripMenuItemContainer";
+            this.showCommandToolStripMenuItemContainer.Size = new System.Drawing.Size(187, 24);
+            this.showCommandToolStripMenuItemContainer.Text = "Show Command";
+            this.showCommandToolStripMenuItemContainer.Click += new System.EventHandler(this.showCommandToolStripMenuItem1_Click);
             // 
             // VeraCryptMounter
             // 
@@ -514,7 +523,7 @@ namespace VeraCrypt_Mounter
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "VeraCryptMounter";
             this.Text = "VeraCryptMounter";
@@ -584,6 +593,7 @@ namespace VeraCrypt_Mounter
         private ToolStripMenuItem automountToolStripMenuItem;
         private ToolStripMenuItem automountToolStripMenuItem1;
         private ToolStripMenuItem showCommandToolStripMenuItem;
+        private ToolStripMenuItem showCommandToolStripMenuItemContainer;
     }
 }
 

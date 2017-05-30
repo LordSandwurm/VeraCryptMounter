@@ -122,21 +122,22 @@ namespace VeraCrypt_Mounter
         /// </summary>
         /// <param name="name">Name of the Drive stored in config</param>
         /// <param name="language">selected language for gui</param>
+        /// <param name="showonly">Disable checks didnt need for showing commandline parameter</param>
         /// <returns>struct MountVareablesdrive</returns>
         /// <exception cref="ArgumentNullException"> thrown if parameter is null or empty</exception>
         /// <exception cref="Exception">thrown for user information</exception>
-        public MountVareables ValidateMountDrive(string name, string language)
+        public MountVareables ValidateMountDrive(string name, string language, bool showonly = false)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("name");
             if (string.IsNullOrEmpty(language))
                 throw new ArgumentNullException("language");
-            return ValidateDrive(name, language);
+            return ValidateDrive(name, language, showonly);
         }
 
         
 
-        private MountVareables ValidateDrive(string drivename, string _language)
+        private MountVareables ValidateDrive(string drivename, string _language, bool showonly)
         {
 
             List<string> parlist = new List<string>();
@@ -164,21 +165,41 @@ namespace VeraCrypt_Mounter
             bool nokeyfile = _config.GetValue(drivename, ConfigTrm.Drive.Nokeyfile, true);
             bool autostartWithWindows = _config.GetValue(drivename, ConfigTrm.Drive.PartitionNotCorrect, false);
 
-            // Test if disk is connected on machine
-            if (!info.CheckDiskPresent(pnpdeviceid))
+            if (!showonly)
             {
-                throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "DiskNotPresentMessage", _language) + "\"" + diskmodel + "\"");
-            }
-
-            if (!_config.GetValue(drivename, ConfigTrm.Drive.Nokeyfile, true))
-            {
-                //test if keyfilekontainer is used and mounted               
-                if (_config.GetValue(ConfigTrm.Mainconfig.Section, ConfigTrm.Mainconfig.Nokeyfile, true))
+                // Test if disk is connected on machine
+                if (!info.CheckDiskPresent(pnpdeviceid))
                 {
-                    keyfilepath = _config.GetValue(drivename, ConfigTrm.Drive.Keyfile, "");
-                    // test if keyfile is valid path
-                    try
+                    throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "DiskNotPresentMessage", _language) + "\"" + diskmodel + "\"");
+                }
+
+                if (!_config.GetValue(drivename, ConfigTrm.Drive.Nokeyfile, true))
+                {
+                    //test if keyfilekontainer is used and mounted               
+                    if (_config.GetValue(ConfigTrm.Mainconfig.Section, ConfigTrm.Mainconfig.Nokeyfile, true))
                     {
+                        keyfilepath = _config.GetValue(drivename, ConfigTrm.Drive.Keyfile, "");
+                        // test if keyfile is valid path
+                        try
+                        {
+                            if (Path.IsPathRooted(keyfilepath))
+                            {
+                                if (!File.Exists(keyfilepath))
+                                {
+                                    throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "NoKeyfileMessage", _language));
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "NoKeyfileMessage", _language));
+                        }
+
+                    }
+                    else
+                    {
+                        keyfilepath = _config.GetValue(drivename, ConfigTrm.Drive.Keyfile, "");
+
                         if (Path.IsPathRooted(keyfilepath))
                         {
                             if (!File.Exists(keyfilepath))
@@ -186,56 +207,43 @@ namespace VeraCrypt_Mounter
                                 throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "NoKeyfileMessage", _language));
                             }
                         }
+                        else
+                        {
+                            keyfilepath = _config.GetValue(ConfigTrm.Mainconfig.Section, ConfigTrm.Mainconfig.Driveletter, "") + _config.GetValue(drivename, ConfigTrm.Drive.Keyfile, "");
+                            //TODO Prüfe ob kexfilekontainer eingebunden ist???
+                            if (!File.Exists(keyfilepath))
+                            {
+                                throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "NoKeyfileMessage", _language));
+                            }
+                        }
                     }
-                    catch (Exception)
-                    {
-                        throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "NoKeyfileMessage", _language));
-                    }
-                
+                    key = keyfilepath;
                 }
-                else
-                {
-                    keyfilepath = _config.GetValue(drivename, ConfigTrm.Drive.Keyfile, "");
 
-                    if (Path.IsPathRooted(keyfilepath))
+#if DEBUG
+                MessageBox.Show(keyfilepath, "Path to Keyfile");
+#endif
+
+                // If a password is cached, the paswordform isn´t show 
+                if (string.IsNullOrEmpty(_password))
+                {
+                    try
                     {
-                        if (!File.Exists(keyfilepath))
-                        {
-                            throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "NoKeyfileMessage", _language));
-                        }
+                        ShowPassworteingabe(ConfigTrm.Drive.Typename, _config.GetValue(drivename, ConfigTrm.Drive.Pimuse, false));
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        keyfilepath = _config.GetValue(ConfigTrm.Mainconfig.Section, ConfigTrm.Mainconfig.Driveletter, "") + _config.GetValue(drivename, ConfigTrm.Drive.Keyfile, "");
-                        //TODO Prüfe ob kexfilekontainer eingebunden ist???
-                        if (!File.Exists(keyfilepath))
-                        {
-                            throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "NoKeyfileMessage", _language));
-                        }
-                    } 
+                        MessageBox.Show(ex.Message);
+                        throw;
+                    }
                 }
-                key = keyfilepath;
+
+                if (!DrivelettersHelper.IsDriveletterFree(dletter))
+                {
+                    throw new DrivletterUsedException(dletter);
+                }
             }
 
-# if DEBUG
-            MessageBox.Show(keyfilepath, "Path to Keyfile");
-# endif
-
-            // If a password is cached, the paswordform isn´t show 
-            if (string.IsNullOrEmpty(_password))
-            {
-                try
-                {
-                    ShowPassworteingabe(ConfigTrm.Drive.Typename, _config.GetValue(drivename, ConfigTrm.Drive.Pimuse, false));
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                    throw;
-                }
-            } 
-
-            
             list = info.GetDriveinfo(pnpdeviceid);
 
             if (list.Count >= 1)
@@ -245,11 +253,6 @@ namespace VeraCrypt_Mounter
             else
             {
                 parlist.Add("\\Device\\Harddisk" + disknumber + "\\Partition" + partnumber);
-            }
-
-            if (!DrivelettersHelper.IsDriveletterFree(dletter))
-            {
-                throw new DrivletterUsedException(dletter);
             }
 
             retstruct.partitionlist = parlist.ToArray();
@@ -279,20 +282,20 @@ namespace VeraCrypt_Mounter
         /// </summary>
         /// <param name="name">Name in config section</param>
         /// <param name="language">Selected language string</param>
-        /// <returns></returns>
+        /// <param name="showonly">Disable checks didnt need for showing commandline parameter</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="Exception"></exception>
-        public MountVareables ValidateMountContainer(string name, string language)
+        public MountVareables ValidateMountContainer(string name, string language, bool showonly = false)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("name");
             if (string.IsNullOrEmpty(language))
                 throw new ArgumentNullException("language");
 
-            return ValidateContainer(name, language);
+            return ValidateContainer(name, language, showonly);
         }
 
-        private MountVareables ValidateContainer(string name, string _language)
+        private MountVareables ValidateContainer(string name, string _language, bool showonly)
         {
             WmiDriveInfo winfo = new WmiDriveInfo();
 
@@ -314,35 +317,56 @@ namespace VeraCrypt_Mounter
             string partnumber = _config.GetValue(name, ConfigTrm.Container.Partnummber, "");
             bool nokeyfile = _config.GetValue(name, ConfigTrm.Container.Nokeyfile, true);
 
-            try
+            if (!showonly)
             {
-                driveletterFromPath = Path.GetPathRoot(@path);
-                driveletterFromPath = driveletterFromPath.Replace(@"\", "");
-            }
-            catch (Exception)
-            {
-                //Do nothing.
-            }
 
-            var driveltterFromPNPID = (!string.IsNullOrEmpty(pnpid)) ? winfo.GetDriveLetter(pnpid, partnumber) : null;
-
-
-            // check if pnpid is set and drive is connected
-            if (!string.IsNullOrEmpty(driveltterFromPNPID))
-            {
-                if (winfo.CheckDiskPresent(pnpid))
-                    throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "DiskNotPresentContainerMessage", _language));
-            }
-
-            if (!_config.GetValue(name, ConfigTrm.Container.Nokeyfile, true))
-            {
-                //test if keyfilekontainer is used and mounted               
-                if (_config.GetValue(ConfigTrm.Mainconfig.Section, ConfigTrm.Mainconfig.Nokeyfile, true))
+                try
                 {
-                    keyfilepath = _config.GetValue(name, ConfigTrm.Container.Keyfile, "");
-                    // test if keyfile is valid path
-                    try
+                    driveletterFromPath = Path.GetPathRoot(@path);
+                    driveletterFromPath = driveletterFromPath.Replace(@"\", "");
+                }
+                catch (Exception)
+                {
+                    //Do nothing.
+                }
+
+                var driveltterFromPNPID = (!string.IsNullOrEmpty(pnpid)) ? winfo.GetDriveLetter(pnpid, partnumber) : null;
+
+
+                // check if pnpid is set and drive is connected
+                if (!string.IsNullOrEmpty(driveltterFromPNPID))
+                {
+                    if (winfo.CheckDiskPresent(pnpid))
+                        throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "DiskNotPresentContainerMessage", _language));
+                }
+
+                if (!_config.GetValue(name, ConfigTrm.Container.Nokeyfile, true))
+                {
+                    //test if keyfilekontainer is used and mounted               
+                    if (_config.GetValue(ConfigTrm.Mainconfig.Section, ConfigTrm.Mainconfig.Nokeyfile, true))
                     {
+                        keyfilepath = _config.GetValue(name, ConfigTrm.Container.Keyfile, "");
+                        // test if keyfile is valid path
+                        try
+                        {
+                            if (Path.IsPathRooted(keyfilepath))
+                            {
+                                if (!File.Exists(keyfilepath))
+                                {
+                                    throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "NoKeyfileMessage", _language));
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "NoKeyfileMessage", _language));
+                        }
+
+                    }
+                    else
+                    {
+                        keyfilepath = _config.GetValue(name, ConfigTrm.Container.Keyfile, "");
+
                         if (Path.IsPathRooted(keyfilepath))
                         {
                             if (!File.Exists(keyfilepath))
@@ -350,77 +374,59 @@ namespace VeraCrypt_Mounter
                                 throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "NoKeyfileMessage", _language));
                             }
                         }
-                    }
-                    catch (Exception)
-                    {
-                        throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "NoKeyfileMessage", _language));
-                    }
-
-                }
-                else
-                {
-                    keyfilepath = _config.GetValue(name, ConfigTrm.Container.Keyfile, "");
-
-                    if (Path.IsPathRooted(keyfilepath))
-                    {
-                        if (!File.Exists(keyfilepath))
+                        else
                         {
-                            throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "NoKeyfileMessage", _language));
+                            keyfilepath = _config.GetValue(ConfigTrm.Mainconfig.Section, ConfigTrm.Mainconfig.Driveletter, "") + _config.GetValue(name, ConfigTrm.Container.Keyfile, "");
+                            //TODO Prüfe ob kexfilekontainer eingebunden ist???
+                            if (!File.Exists(keyfilepath))
+                            {
+                                throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "NoKeyfileMessage", _language));
+                            }
                         }
                     }
-                    else
+                    key = keyfilepath;
+                }
+
+#if DEBUG
+                MessageBox.Show(keyfilepath + " " + name, "Path to Keyfile");
+#endif
+
+                // If a password is cached, the paswordform isn´t show
+                if (string.IsNullOrEmpty(_password))
+                {
+                    try
                     {
-                        keyfilepath = _config.GetValue(ConfigTrm.Mainconfig.Section, ConfigTrm.Mainconfig.Driveletter, "") + _config.GetValue(name, ConfigTrm.Container.Keyfile, "");
-                        //TODO Prüfe ob kexfilekontainer eingebunden ist???
-                        if (!File.Exists(keyfilepath))
-                        {
-                            throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "NoKeyfileMessage", _language));
-                        }
+                        bool dres = ShowPassworteingabe(ConfigTrm.Container.Typename, _config.GetValue(name, ConfigTrm.Container.Pimuse, false));
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                        throw;
                     }
                 }
-                key = keyfilepath;
-            }
 
-# if DEBUG
-            MessageBox.Show(keyfilepath + " " + name, "Path to Keyfile");
-# endif
-
-            // If a password is cached, the paswordform isn´t show
-            if (string.IsNullOrEmpty(_password))
-            {
-                try
+                //
+                if (!string.IsNullOrEmpty(driveletterFromPath) && !string.IsNullOrEmpty(driveltterFromPNPID))
                 {
-                    bool dres = ShowPassworteingabe(ConfigTrm.Container.Typename, _config.GetValue(name, ConfigTrm.Container.Pimuse, false));
+                    if (!driveltterFromPNPID.Equals(driveletterFromPath))
+                    {
+                        path = path.Substring(1, path.Length);
+                        path = driveltterFromPNPID + path;
+                    }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                    throw;
-                }
-            }
 
-            //
-            if (!string.IsNullOrEmpty(driveletterFromPath) && !string.IsNullOrEmpty(driveltterFromPNPID))
-            {
-                if (!driveltterFromPNPID.Equals(driveletterFromPath))
+                //if pim isnt used set to null
+                if (!_config.GetValue(name, ConfigTrm.Container.Pimuse, false))
+                    _pim = null;
+
+                // set quotes to path
+                path = '\u0022' + path + '\u0022';
+
+                if (!DrivelettersHelper.IsDriveletterFree(dletter))
                 {
-                    path = path.Substring(1, path.Length);
-                    path = driveltterFromPNPID + path;
+                    throw new DrivletterUsedException(dletter);
                 }
             }
-
-            //if pim isnt used set to null
-            if (!_config.GetValue(name, ConfigTrm.Container.Pimuse, false))
-                _pim = null;
-
-            // set quotes to path
-            path = '\u0022' + path + '\u0022';
-
-            if (!DrivelettersHelper.IsDriveletterFree(dletter))
-            {
-                throw new DrivletterUsedException(dletter);
-            }
-
             mvd.path = path;
             mvd.driveletter = dletter;
             mvd.key = key;

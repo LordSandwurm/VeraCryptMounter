@@ -78,30 +78,30 @@ namespace VeraCrypt_Mounter
             const string status = "Die Vareable ist null oder leer:";
             try
             {
-                if (partition.Length <= 0)
+                if (!showarguments)
                 {
-                    throw new Exception(status + "(partition)");
-                }
-                if (string.IsNullOrEmpty(driveletter))
-                {
-                    throw new Exception(status + "(driveletter)");
-                }
 
-                if (!DrivelettersHelper.IsDriveletterFree(driveletter))
-                {
-                    throw new Exception("Laufwerksbuchstabe ist belegt");
-                }
-                if (!string.IsNullOrEmpty(keyfile))
-                {
-                    if (!File.Exists(keyfile))
+                    if (partition.Length <= 0)
                     {
-                        throw new Exception("Keyfile nicht vorhanden");
+                        throw new Exception(status + "(partition)");
+                    }
+                    if (string.IsNullOrEmpty(driveletter))
+                    {
+                        throw new Exception(status + "(driveletter)");
+                    }
+
+                    if (!DrivelettersHelper.IsDriveletterFree(driveletter))
+                    {
+                        throw new Exception("Laufwerksbuchstabe ist belegt");
+                    }
+                    if (!string.IsNullOrEmpty(keyfile))
+                    {
+                        if (!File.Exists(keyfile))
+                        {
+                            throw new Exception("Keyfile nicht vorhanden");
+                        }
                     }
                 }
-                //if (!File.Exists(Tc.FileName))
-                //{
-                //    throw new Exception("TrueCrypt.exe nicht vorhanden");
-                //}
             }
             catch (Exception e)
             {
@@ -131,7 +131,7 @@ namespace VeraCrypt_Mounter
             if (tc)
                 argumentstring += Truecrypt;         
 # if DEBUG
-            DialogResult result = MessageBox.Show(Tc.Arguments, "Mountstring", MessageBoxButtons.RetryCancel);
+            DialogResult result = MessageBox.Show(argumentstring, "Mountstring", MessageBoxButtons.RetryCancel);
             if (result == DialogResult.Cancel)
                 return 2;
 #endif
@@ -142,7 +142,7 @@ namespace VeraCrypt_Mounter
                 foreach (string pa in partition)
                 {
                     string path = Volume + pa;
-                    MessageBox.Show(path);
+                    MessageBox.Show(argumentstring + path, "Commandline", MessageBoxButtons.OK);
                     //Show string
                 }
             }
@@ -292,23 +292,21 @@ namespace VeraCrypt_Mounter
             const string status = "Die Vareable ist null oder leer:";
             try
             {
-                if (string.IsNullOrEmpty(path))
+                if (!showarguments)
                 {
-                    throw new Exception(status + "(path)");
+                    if (string.IsNullOrEmpty(path))
+                    {
+                        throw new Exception(status + "(path)");
+                    }
+                    if (string.IsNullOrEmpty(driveletter))
+                    {
+                        throw new Exception(status + "(driveletter)");
+                    }
+                    if (!DrivelettersHelper.IsDriveletterFree(driveletter))
+                    {
+                        throw new Exception("Laufwerksbuchstabe ist belegt");
+                    }
                 }
-
-                if (string.IsNullOrEmpty(driveletter))
-                {
-                    throw new Exception(status + "(driveletter)");
-                }
-                if (!DrivelettersHelper.IsDriveletterFree(driveletter))
-                {
-                    throw new Exception("Laufwerksbuchstabe ist belegt");
-                }
-                //if (!File.Exists(Tc.FileName))
-                //{
-                //    throw new Exception("TrueCrypt.exe nicht vorhanden");
-                //}
             }
             catch (Exception e)
             {
@@ -342,7 +340,16 @@ namespace VeraCrypt_Mounter
                 return 2;
             //Clipboard.SetDataObject(argumentstring, true);
 #endif
-            output = ProcessMount(argumentstring);
+            if (showarguments)
+            {
+                MessageBox.Show(argumentstring, "Commandline", MessageBoxButtons.OK);
+                output = 1;
+            }
+            else
+            {
+                output = ProcessMount(argumentstring);
+            }
+          
             return output;
         }
         /// <summary>

@@ -86,6 +86,7 @@ namespace VeraCrypt_Mounter
         /// <param name="pim">string</param>
         /// <param name="hash">string</param>
         /// <param name="tc">bool</param>
+        /// <param name="showarguments"></param>
         /// <returns></returns>
         public delegate int MountDriveDelegate(string[] partition, string driveletter, string keyfile, string password, bool silent,
                                                 bool beep, bool force, bool readOnly, bool removable, string pim, string hash, bool tc, bool showarguments = false);
@@ -105,6 +106,7 @@ namespace VeraCrypt_Mounter
         /// <param name="tc"></param>
         /// <param name="pim"></param>
         /// <param name="hash"></param>
+        /// <param name="showarguments"></param>
         /// <returns></returns>
         public delegate int MountContainerDelegate(string path, string driveletter, string keyfile, string password, bool silent,
                                                    bool beep, bool force, bool readOnly, bool removable, bool tc, string pim,string hash, bool showarguments = false);
@@ -423,6 +425,7 @@ namespace VeraCrypt_Mounter
                     automountToolStripMenuItem.Text = LanguagePool.GetInstance().GetString(LanguageRegion, "automountToolStripMenuItem", _language);
                     automountToolStripMenuItem1.Text = LanguagePool.GetInstance().GetString(LanguageRegion, "automountToolStripMenuItem", _language);
                     showCommandToolStripMenuItem.Text = LanguagePool.GetInstance().GetString(LanguageRegion, "toolStripMenuItem_Drive_string", _language);
+                    showCommandToolStripMenuItemContainer.Text = LanguagePool.GetInstance().GetString(LanguageRegion, "toolStripMenuItem_Drive_string", _language);
                     //.Text = LanguagePool.GetInstance().GetString(LanguageRegion, "", _language);
 
                     // Fill the tooltips with text.
@@ -1459,6 +1462,8 @@ namespace VeraCrypt_Mounter
 
         #endregion
 
+        #region ShowCommandline
+
         /// <summary>
         /// Collect comand line command and show them.
         /// </summary>
@@ -1488,31 +1493,67 @@ namespace VeraCrypt_Mounter
             }
 
             name = comboBoxDrives.SelectedItem.ToString();
-            mvd = vm.ValidateMountDrive(name, _language);
-            //try
-            //{
-                
-            //}
-            //catch (Exception ex)
-            //{
-            //    //MessageBox.Show(ex.Message, LanguagePool.GetInstance().GetString(LanguageRegion, "Error", _language), MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            //    //return;
-            //}
-
-            toolStripLabelNotification.Visible = false;
-            toolStripProgressBar.Visible = true;
-            toolStripProgressBar.MarqueeAnimationSpeed = 30;
-            Busy();
-            Cursor = Cursors.WaitCursor;
-
-            // mount drive 
+            
+            try
+            {
+                mvd = vm.ValidateMountDrive(name, _language, true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, LanguagePool.GetInstance().GetString(LanguageRegion, "Error", _language), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             mountdrive.BeginInvoke(mvd.partitionlist, mvd.driveletter, mvd.key, mvd.password, mvd.silent, mvd.beep, mvd.force, mvd.readOnly, mvd.removalbe, mvd.pim,
                                     mvd.hash, mvd.tc, showarguments, CallbackHandlerMountDrive, mountdrive);
-
-            //change to mount state 
-            _lablesuccseed = LanguagePool.GetInstance().GetString(LanguageRegion, "NotificationDriveSucceed", _language);
-            _lablefailed = LanguagePool.GetInstance().GetString(LanguageRegion, "NotificationDriveFaild", _language);
             return;
         }
+
+        /// <summary>
+        /// Collect comand line command and show them.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void showCommandToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            bool showarguments = true;
+            MountVareables mvd;
+            ValidateMount vm = new ValidateMount();
+            MountContainerDelegate mountcontainer = Mount.MountContainer;
+            string name;
+            // first check if anything is chosen
+            try
+            {
+                // Test if entry in driverbox is chosen
+                if (comboBoxContainer.SelectedItem == null)
+                {
+                    throw new Exception(LanguagePool.GetInstance().GetString(LanguageRegion, "SelectionFaild", _language));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, LanguagePool.GetInstance().GetString(LanguageRegion, "Error", _language), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            name = comboBoxContainer.SelectedItem.ToString();
+
+            toolStripLabelNotification.Visible = false;
+
+            try
+            {
+
+                mvd = vm.ValidateMountContainer(name, _language);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, LanguagePool.GetInstance().GetString(LanguageRegion, "Error", _language), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            mountcontainer.BeginInvoke(mvd.path, mvd.driveletter, mvd.key, mvd.password, mvd.silent, mvd.beep, mvd.force, mvd.readOnly, mvd.removalbe,
+                                        mvd.tc, mvd.pim, mvd.hash, showarguments, CallbackHandlerMountContainer, mountcontainer);
+
+            return;
+        }
+        #endregion
     }
 }
