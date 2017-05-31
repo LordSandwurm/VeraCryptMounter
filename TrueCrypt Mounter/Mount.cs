@@ -129,21 +129,37 @@ namespace VeraCrypt_Mounter
             if (readOnly)
                 argumentstring += Mountoption + MountoptionReadonly;
             if (tc)
-                argumentstring += Truecrypt;         
-# if DEBUG
-            DialogResult result = MessageBox.Show(argumentstring, "Mountstring", MessageBoxButtons.RetryCancel);
-            if (result == DialogResult.Cancel)
-                return 2;
-#endif
+                argumentstring += Truecrypt;
             
 
             if (showarguments)
             {
                 foreach (string pa in partition)
                 {
-                    string path = Volume + pa;
-                    MessageBox.Show(argumentstring + path, "Commandline", MessageBoxButtons.OK);
-                    //Show string
+                    int count = 0;
+                    Passwordinput pin = new Passwordinput();
+                    do
+                    {                     
+                        DialogResult res = pin.ShowDialog();
+                        if (res == DialogResult.OK)
+                        {
+                            if (Password_helper.Check_password(pin._password))
+                            {
+                                string path = Volume + pa;
+                                MessageBox.Show(argumentstring + path, "Commandline", MessageBoxButtons.OK);
+                                output = 1;
+                                count = 4;
+                            }
+                            else
+                            {
+                                DialogResult wrongres = MessageBox.Show("Password Wrong", "", MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning);
+                                if (wrongres == DialogResult.Cancel)
+                                { count = 4; }
+                                else
+                                { count++; }
+                            }
+                        } else { count = 4; }
+                    } while (count <= 3);
                 }
             }
             else
@@ -190,10 +206,6 @@ namespace VeraCrypt_Mounter
                 {
                     throw new Exception("Laufwerksbuchstabe ist belegt");
                 }
-                //if (!File.Exists(Tc.FileName))
-                //{
-                //    throw new Exception("TrueCrypt.exe nicht vorhanden");
-                //}
             }
             catch (Exception e)
             {
@@ -334,16 +346,32 @@ namespace VeraCrypt_Mounter
             if (tc)
                 argumentstring += Truecrypt;
 
-# if DEBUG
-            DialogResult result = MessageBox.Show(argumentstring, "Mountstring", MessageBoxButtons.RetryCancel);
-            if (result == DialogResult.Cancel)
-                return 2;
-            //Clipboard.SetDataObject(argumentstring, true);
-#endif
             if (showarguments)
             {
-                MessageBox.Show(argumentstring, "Commandline", MessageBoxButtons.OK);
-                output = 1;
+                int count = 0;
+                Passwordinput pin = new Passwordinput();
+                do
+                {
+                    DialogResult res = pin.ShowDialog();
+                    if (res == DialogResult.OK)
+                    {
+                        if (Password_helper.Check_password(pin._password))
+                        {
+                            MessageBox.Show(argumentstring + path, "Commandline", MessageBoxButtons.OK);
+                            output = 1;
+                            count = 4;
+                        }
+                        else
+                        {
+                            DialogResult wrongres = MessageBox.Show("Password Wrong", "", MessageBoxButtons.RetryCancel, MessageBoxIcon.Warning);
+                            if (wrongres == DialogResult.Cancel)
+                            { count = 4; }
+                            else
+                            { count++; }
+                        }
+                    }
+                    else { count = 4; }
+                } while (count <= 3);
             }
             else
             {

@@ -54,7 +54,7 @@ namespace VeraCrypt_Mounter
             labelPassword.Text = LanguagePool.GetInstance().GetString(LanguageRegion, "labelPasswordMaster", _language);
             labelPim.Visible = false;
             textBoxPim.Visible = false;
-            
+
         }
         /// <summary>
         /// To show the safed password.
