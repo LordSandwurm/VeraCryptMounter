@@ -50,7 +50,7 @@ namespace VeraCrypt_Mounter
         private string _language;
         private string _lablefailed;
         private string _lablesuccseed;
-       
+
 
         #endregion
 
@@ -109,7 +109,7 @@ namespace VeraCrypt_Mounter
         /// <param name="showarguments"></param>
         /// <returns></returns>
         public delegate int MountContainerDelegate(string path, string driveletter, string keyfile, string password, bool silent,
-                                                   bool beep, bool force, bool readOnly, bool removable, bool tc, string pim,string hash, bool showarguments = false);
+                                                   bool beep, bool force, bool readOnly, bool removable, bool tc, string pim, string hash, bool showarguments = false);
 
         /// <summary>
         /// delegate for dismounting a drive or container
@@ -210,7 +210,7 @@ namespace VeraCrypt_Mounter
             }
             return null;
         }
-        
+
         /// <summary>
         /// Changed notification if automunt has tried to mount anything.
         /// </summary>
@@ -252,7 +252,7 @@ namespace VeraCrypt_Mounter
         /// Set Eventwatcher for usb event. called if any usb event is signaled.
         /// </summary>
         private void UsbEventWatcher()
-        {            
+        {
             WqlEventQuery q = new WqlEventQuery();
             scope.Options.EnablePrivileges = true; //sets required privilege
             try
@@ -285,8 +285,8 @@ namespace VeraCrypt_Mounter
             UsbEventWatcher();
 
             comboBoxDrives.ContextMenuStrip = contextMenuStripDrive;
-            comboBoxContainer.ContextMenuStrip =contextMenuStripContainer ;
-            
+            comboBoxContainer.ContextMenuStrip = contextMenuStripContainer;
+
             // Get Singelton for config
             _config = Singleton<ConfigManager>.Instance.Init(_config);
 
@@ -301,7 +301,7 @@ namespace VeraCrypt_Mounter
 
             ToolStripMenuItemNotifyKeyfilecontainer.Enabled = nokeyfile;
             groupBoxKeyfileContainer.Visible = nokeyfile;
-                
+
             if (nokeyfile)
             {
                 EnableKeyfilekontainer();
@@ -310,7 +310,7 @@ namespace VeraCrypt_Mounter
             {
                 DisableKeyfilekontainer();
             }
-            
+
             _cbdrive.Clear();
             _cbkontainer.Clear();
             _mounteddrives.Clear();
@@ -356,12 +356,6 @@ namespace VeraCrypt_Mounter
             // Fill controls with selected language
             LanguageFill();
             ValidateTest();
-        }
-        /// <summary>
-        /// Destructor set passwords and PIM to null.
-        /// </summary>
-        ~VeraCryptMounter()
-        {
         }
 
         #endregion

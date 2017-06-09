@@ -146,7 +146,8 @@ namespace VeraCrypt_Mounter
                             if (Password_helper.Check_password(pin._password))
                             {
                                 string path = Volume + pa;
-                                MessageBox.Show(argumentstring + path, "Commandline", MessageBoxButtons.OK);
+                                ShowCommandWindow scw = new ShowCommandWindow(argumentstring + path);
+                                scw.ShowDialog();
                                 output = 1;
                                 count = 4;
                             }
@@ -357,7 +358,8 @@ namespace VeraCrypt_Mounter
                     {
                         if (Password_helper.Check_password(pin._password))
                         {
-                            MessageBox.Show(argumentstring + path, "Commandline", MessageBoxButtons.OK);
+                            ShowCommandWindow scw = new ShowCommandWindow(argumentstring);
+                            scw.ShowDialog();
                             output = 1;
                             count = 4;
                         }

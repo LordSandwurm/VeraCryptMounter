@@ -54,7 +54,7 @@ namespace VeraCrypt_Mounter
                     mvd = vm.ValidateMountContainer(name, _language);
                     
                 }
-                catch (DrivletterUsedException dx)
+                catch (DrivletterUsedException)
                 {
                     //Dont show error if drivletter is used. Drive is probalbly mounted
                     error = true;
@@ -88,7 +88,7 @@ namespace VeraCrypt_Mounter
                     
 
                 }
-                catch (DrivletterUsedException dx)
+                catch (DrivletterUsedException)
                 {
                     //Dont show error if drivletter is used. Drive is probalbly mounted
                     error = true;

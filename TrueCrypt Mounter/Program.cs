@@ -26,16 +26,9 @@ using System.Windows.Forms;
 namespace VeraCrypt_Mounter
 {
 
+
     internal class Program
     {
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        //private static ManagementScope scope = new ManagementScope("root\\CIMV2");
-        //private static ManagementOperationObserver observer = new ManagementOperationObserver();
-
         private static string[] _driveliste;
 
         public string[] Drivelist
@@ -51,29 +44,8 @@ namespace VeraCrypt_Mounter
         [STAThread]
         private static void Main()
         {
+           
 
-            //ManagementEventWatcher w = null;
-            //WqlEventQuery q = new WqlEventQuery();
-
-            //// Bind to local machine
-
-            //scope.Options.EnablePrivileges = true; //sets required privilege
-            //try
-            //{
-            //    q.EventClassName = "__InstanceCreationEvent";
-            //    q.WithinInterval = new TimeSpan(0, 0, 10);
-
-            //    q.Condition = @"TargetInstance ISA 'Win32_USBControllerDevice' ";
-            //    w = new ManagementEventWatcher(scope, q);
-
-            //    w.EventArrived += UsbEvent.UsbEventArrived;
-            //    w.Start();
-
-            //}
-            //catch (Exception e)
-            //{
-            //    Console.WriteLine(e.Message);
-            //}
             bool createdNew;
             using (var mutex = new Mutex(true, "VeraCryptMounter", out createdNew))
             {
@@ -103,12 +75,20 @@ namespace VeraCrypt_Mounter
                     {
                         if (process.Id != current.Id)
                         {
-                            SetForegroundWindow(process.MainWindowHandle);
+                            if (!NativeMethods.SetForegroundWindow(process.MainWindowHandle))
+                                throw new System.ComponentModel.Win32Exception();
                             break;
                         }
                     }
                 }
             }
         }       
+    }
+    internal static class NativeMethods
+    {
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool SetForegroundWindow(IntPtr hWnd);
     }
 }
