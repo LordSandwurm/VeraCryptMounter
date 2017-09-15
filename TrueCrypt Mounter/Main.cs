@@ -32,7 +32,7 @@ namespace VeraCrypt_Mounter
         #region Vareables
 
         private const string AppId = "VeraCryptMounter";
-        private const string LanguageRegion = "Main";
+        private const string LanguageRegion = "Main"; 
         private const string LanguageToolTip = "MainToolTips";
 
         private readonly BindingManagerBase _bmbd;
@@ -1497,8 +1497,10 @@ namespace VeraCrypt_Mounter
                 MessageBox.Show(ex.Message, LanguagePool.GetInstance().GetString(LanguageRegion, "Error", _language), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            mountdrive.BeginInvoke(mvd.partitionlist, mvd.driveletter, mvd.key, mvd.password, mvd.silent, mvd.beep, mvd.force, mvd.readOnly, mvd.removalbe, mvd.pim,
-                                    mvd.hash, mvd.tc, showarguments, CallbackHandlerMountDrive, mountdrive);
+            Mount.MountDrive(mvd.partitionlist, mvd.driveletter, mvd.key, mvd.password, mvd.silent, mvd.beep, mvd.force, mvd.readOnly, mvd.removalbe, mvd.pim,
+                                    mvd.hash, mvd.tc, showarguments);
+            //mountdrive.BeginInvoke(mvd.partitionlist, mvd.driveletter, mvd.key, mvd.password, mvd.silent, mvd.beep, mvd.force, mvd.readOnly, mvd.removalbe, mvd.pim,
+            //                        mvd.hash, mvd.tc, showarguments, CallbackHandlerMountDrive, mountdrive);
             return;
         }
 

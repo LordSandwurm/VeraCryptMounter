@@ -121,7 +121,7 @@ namespace VeraCrypt_Mounter
             if (silent)
                 argumentstring += Silent;
             if (beep)
-                argumentstring += Beep;
+                argumentstring += Beep;  
             if (force)
                 argumentstring += Force;
             if (removable)

@@ -279,9 +279,14 @@ namespace VeraCrypt_Mounter
                 else
                     targetRegistryKey.DeleteValue(dateipfad.Remove(0, dateipfad.LastIndexOf(@"\") + 1));
             }
+            catch (ArgumentException)
+            {
+                //MessageBox.Show(this, ex.Message, "Argumetn null", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, "error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(this, ex.Message, ex.GetType().ToString(), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 

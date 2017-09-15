@@ -65,8 +65,6 @@ namespace VeraCrypt_Mounter
                     {
                         Application.Exit();
                     }
-                    //w.EventArrived -= UsbEvent.UsbEventArrived;
-                    //w.Stop();
                 }
                 else
                 {
@@ -86,7 +84,6 @@ namespace VeraCrypt_Mounter
     }
     internal static class NativeMethods
     {
-
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool SetForegroundWindow(IntPtr hWnd);

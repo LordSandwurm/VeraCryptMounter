@@ -8,6 +8,12 @@
       <E>E</E>
     </Text>    
   </Region>
+  <Region name="ShowCommandWindow">
+    <Text key="buttonOK">
+      <D>OK</D>
+      <E>OK</E>
+    </Text>
+  </Region>
   <Region name="Main">
     <Text key="buttonMount">
       <D>Einbinden</D>

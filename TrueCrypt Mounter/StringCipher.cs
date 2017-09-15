@@ -29,14 +29,17 @@ namespace VeraCrypt_Mounter
         // This constant is used to determine the rounds used for AES.
         private const int rounds = 50000;
 
-
         /// <summary>
         /// Encrypt string with aes-256. Retrun base 64 string with salt(chars 88).
         /// </summary>
         /// <param name="plainText">The plain text string.</param>
         /// <param name="passPhrase">The password for the encryption.</param>
+        /// <param name="method">method of encryption. 
+        /// <value>new</value>
+        /// <value>old</value>
+        /// </param>
         /// <returns></returns>
-        public static string Encrypt(string plainText, string passPhrase)
+        public static string Encrypt(string plainText, string passPhrase, string method = "new")
         {
             //get nedded form of passphrase and plaintest
             byte[] key = Utils.SafeUTF8.GetBytes(passPhrase);
@@ -48,8 +51,11 @@ namespace VeraCrypt_Mounter
             string ssalt = Convert.ToBase64String(rand);
 
             byte[] output = null;
-    
-            output = EtM_CTR.Encrypt(key, plain, salt, rounds);
+            if (method.Equals("new"))
+                output = SuiteB.Encrypt(key, plain, salt);
+            
+            if (method.Equals("old"))
+                output = EtM_CTR.Encrypt(key, plain, salt, rounds);
 
             if (output == null)
                 return null;
@@ -64,8 +70,12 @@ namespace VeraCrypt_Mounter
         /// </summary>
         /// <param name="cipherText">cypher text with salt at the end.</param>
         /// <param name="passPhrase">password for the decryption.</param>
+        /// <param name="method">method of decryption. 
+        /// <value>new</value>
+        /// <value>old</value>
+        /// </param>
         /// <returns></returns>
-        public static string Decrypt(string cipherText, string passPhrase)
+        public static string Decrypt(string cipherText, string passPhrase, string method = "new")
         {
             //get nedded form of passphrase and cyphertext
             byte[] key = Utils.SafeUTF8.GetBytes(passPhrase);
@@ -74,8 +84,12 @@ namespace VeraCrypt_Mounter
             ArraySegment<byte> bytecyphertext = new ArraySegment<byte>(Convert.FromBase64String(cipherText));
             ArraySegment<byte> bytesalt = new ArraySegment<byte>(Convert.FromBase64String(salt));
 
+            byte[] decout = null;
+            if (method.Equals("new"))
+                decout = SuiteB.Decrypt(key, bytecyphertext, bytesalt);
 
-            byte[] decout = EtM_CTR.Decrypt(key, bytecyphertext, bytesalt, rounds);
+            if (method.Equals("old"))
+                decout = EtM_CTR.Decrypt(key, bytecyphertext, bytesalt, rounds);
 
             if (decout == null)
                 return null;

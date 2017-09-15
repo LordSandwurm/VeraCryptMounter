@@ -29,6 +29,10 @@ namespace VeraCrypt_Mounter
         public static class Mainconfig
         {
             /// <summary>
+            /// Default encryption string
+            /// </summary>
+            public const string Encryption = "SuiteB";
+            /// <summary>
             /// Default langugage string
             /// </summary>
             public const string Defaultlanguage = "Defaultlanguage";

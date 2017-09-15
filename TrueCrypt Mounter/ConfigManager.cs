@@ -14,7 +14,7 @@
 * 
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-* **/
+***/
 using System.IO;
 using System.Windows.Forms;
 
@@ -46,6 +46,9 @@ namespace VeraCrypt_Mounter
 
             if (!conf.HasEntry(ConfigTrm.Mainconfig.Section, ConfigTrm.Mainconfig.Defaultlanguage))
                 conf.SetValue(ConfigTrm.Mainconfig.Section, ConfigTrm.Mainconfig.Defaultlanguage, "E");
+
+            if (!conf.HasEntry(ConfigTrm.Mainconfig.Section, ConfigTrm.Mainconfig.Encryption))
+                conf.SetValue(ConfigTrm.Mainconfig.Section, ConfigTrm.Mainconfig.Encryption, "nothing");
 
             if (!conf.HasEntry(ConfigTrm.Mainconfig.Section, ConfigTrm.Mainconfig.Language))
                 conf.SetValue(ConfigTrm.Mainconfig.Section, ConfigTrm.Mainconfig.Language,

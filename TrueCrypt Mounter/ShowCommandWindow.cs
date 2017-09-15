@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace VeraCrypt_Mounter
@@ -36,7 +35,7 @@ namespace VeraCrypt_Mounter
             try
             {
                 // Fill the controls with text.
-                buttonOk.Text = LanguagePool.GetInstance().GetString(LanguageRegion, "buttonDismount", _language);
+                buttonOk.Text = LanguagePool.GetInstance().GetString(LanguageRegion, "buttonOK", _language);
 
             }
             catch (Exception ex)

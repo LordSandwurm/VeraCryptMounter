@@ -499,10 +499,11 @@ namespace VeraCrypt_Mounter
         /// <param name="section"></param>
         /// <param name="entry"></param>
         /// <param name="defaultValue"></param>
+        /// <param name="plain">retrun decrypted value</param>
         /// <returns></returns>
-        public string GetValue(string section, string entry, string defaultValue)
+        public string GetValue(string section, string entry, string defaultValue, bool plain = false)
         {
-            object value = GetValue(section, entry);
+            object value = GetValue(section, entry, plain);
             return (value == null ? defaultValue : value.ToString());
         }
         /// <summary>
@@ -511,10 +512,11 @@ namespace VeraCrypt_Mounter
         /// <param name="section"></param>
         /// <param name="entry"></param>
         /// <param name="defaultValue"></param>
+        /// <param name="plain">retrun decrypted value</param>
         /// <returns></returns>
-        public int GetValue(string section, string entry, int defaultValue)
+        public int GetValue(string section, string entry, int defaultValue, bool plain = false)
         {
-            object value = GetValue(section, entry);
+            object value = GetValue(section, entry, plain);
             if (value == null)
                 return defaultValue;
 
@@ -533,10 +535,11 @@ namespace VeraCrypt_Mounter
         /// <param name="section"></param>
         /// <param name="entry"></param>
         /// <param name="defaultValue"></param>
+        /// <param name="plain">retrun decrypted value</param>
         /// <returns></returns>
-        public double GetValue(string section, string entry, double defaultValue)
+        public double GetValue(string section, string entry, double defaultValue, bool plain = false)
         {
-            object value = GetValue(section, entry);
+            object value = GetValue(section, entry, plain);
             if (value == null)
                 return defaultValue;
 
@@ -555,10 +558,11 @@ namespace VeraCrypt_Mounter
         /// <param name="section"></param>
         /// <param name="entry"></param>
         /// <param name="defaultValue"></param>
+        /// <param name="plain">retrun decrypted value</param>
         /// <returns></returns>
-        public bool GetValue(string section, string entry, bool defaultValue)
+        public bool GetValue(string section, string entry, bool defaultValue, bool plain = false)
         {
-            object value = GetValue(section, entry);
+            object value = GetValue(section, entry, plain);
             if (value == null)
                 return defaultValue;
 
@@ -576,8 +580,9 @@ namespace VeraCrypt_Mounter
         /// </summary>
         /// <param name="section"></param>
         /// <param name="entry"></param>
+        /// <param name="plain">retrun decrypted value</param>
         /// <returns></returns>
-        public object GetValue(string section, string entry)
+        private object GetValue(string section, string entry, bool plain = false)
         {
             VerifyAndAdjustSection(ref section);
             VerifyAndAdjustEntry(ref entry);
@@ -591,6 +596,10 @@ namespace VeraCrypt_Mounter
                 {
                     XmlNode entryNode = root.SelectSingleNode(GroupNameSlash + section + "/add[@key=\"" + entry + "\"]");
                     string value = entryNode.Attributes["value"].Value;
+
+                    if (plain)
+                        return value;
+
                     //encrypt value
                     value = StringCipher.Decrypt(value, Password_helper.Password);
                     return value;

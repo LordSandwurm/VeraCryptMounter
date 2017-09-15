@@ -1,9 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
-using SecurityDriven.Inferno.Hash;
-using System.Security;
-using System.Security.Permissions;
 
 namespace VeraCrypt_Mounter
 {
@@ -49,6 +46,34 @@ namespace VeraCrypt_Mounter
             var conf = new Config();
             conf.XmlPathName = string.Format(_confDir);
             conf.GroupName = null;
+            //check old encryption method password
+            if (!conf.HasEntry(ConfigTrm.Mainconfig.Section, ConfigTrm.Mainconfig.Encryption))
+            {
+                var cypher = conf.GetValue(ConfigTrm.Mainconfig.Section, ConfigTrm.Mainconfig.Passwordtest, "", true);
+                if (StringCipher.Decrypt(cypher, _password, "old").Equals("Waldmann"))
+                {
+                    conf.GroupName = null;
+
+                    string[] sections = conf.GetSectionNames();
+
+                    foreach (string section in sections)
+                    {
+                        if (!string.Equals(section, "configSections"))
+                        {
+                            string[] entrys = conf.GetEntryNames(section);
+                            foreach (string entry in entrys)
+                            {
+                                var vars = conf.GetValue(section, entry, entry.GetType().ToString(), true);
+                                vars = StringCipher.Decrypt(vars, _password, "old");
+                                conf.SetValue(section, entry, vars);
+                            }
+                        }
+                    }
+                    return true;
+                }
+                return false;
+
+            }
             if (conf.HasEntry(ConfigTrm.Mainconfig.Section,ConfigTrm.Mainconfig.Passwordtest))
             {
                 if (conf.GetValue(ConfigTrm.Mainconfig.Section, ConfigTrm.Mainconfig.Passwordtest, "").Equals("Waldmann"))
@@ -96,18 +121,14 @@ namespace VeraCrypt_Mounter
                     string[] entrys = conf.GetEntryNames(section);
                     foreach (string entry in entrys)
                     {
-                        var vars = conf.GetValue(section, entry);
+                        var vars = conf.GetValue(section, entry, entry.GetType().ToString());
                         var oldpw = _password;
                         _password = newPassword;
                         conf.SetValue(section, entry, vars);
                         _password = oldpw;
                     }
-                }
-                    
-                
+                }   
             }
-
         }
-
     }
 }

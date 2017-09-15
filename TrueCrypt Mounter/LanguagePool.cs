@@ -179,7 +179,6 @@ namespace VeraCrypt_Mounter
         }
 
         #endregion
-
         #region Methods: GetString
 
         /// <summary>
@@ -211,8 +210,7 @@ namespace VeraCrypt_Mounter
 
                         return text;
                     }
-                    throw new Exception(string.Format(
-                                            "Region {0} ist nicht vorhanden", region));
+                    throw new Exception(string.Format("Region {0} ist nicht vorhanden", region));
                 }
                 return "";
             }
